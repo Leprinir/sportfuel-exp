@@ -46,7 +46,7 @@ function makeProduct(seed: Seed): Product {
     brand: seed.brand,
     categoryId: seed.categoryId,
     price: seed.price,
-    imageUrl: `/sportfuel/images/products/${seed}.jpg`,
+    imageUrl: `/sportfuel/images/products/${seed.slug}.jpg`,
     shortDescription: seed.shortDescription,
     description: seed.description,
     specs,
