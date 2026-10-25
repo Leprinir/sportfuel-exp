@@ -6,10 +6,11 @@ interface Props {
   className?: string;
   onSubmitted?: () => void;
   placeholder?: string;
+  autoFocus?: boolean;
 }
 
 /** Поисковая строка: при отправке переходит в каталог с запросом. */
-export function SearchBar({ className = '', onSubmitted, placeholder = 'Поиск по каталогу…' }: Props) {
+export function SearchBar({ className = '', onSubmitted, placeholder = 'Поиск по каталогу…', autoFocus = false }: Props) {
   const [value, setValue] = useState('');
   const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ export function SearchBar({ className = '', onSubmitted, placeholder = 'Поис
       <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
       <input
         type="search"
+        autoFocus={autoFocus}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { ChevronDown, Heart, Search, X, Zap } from 'lucide-react';
+import { ChevronDown, Heart, Menu, Search, X, Zap } from 'lucide-react';
 import { categories } from '../data/categories';
 import { products } from '../data/products';
 import { useFavorites } from '../hooks/useFavorites';
@@ -17,6 +17,7 @@ export function Header() {
   const { count } = useFavorites();
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const categoryCounts = useMemo(() => {
@@ -36,11 +37,11 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    document.body.style.overflow = mobileOpen || searchOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [mobileOpen]);
+  }, [mobileOpen, searchOpen]);
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
@@ -137,15 +138,25 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Кнопка мобильного меню */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm transition-colors hover:bg-brand-700 lg:hidden"
-          aria-label="Поиск"
-        >
-          <Search className="h-5 w-5" aria-hidden="true" />
-        </button>
+        {/* Мобильные кнопки: поиск + меню */}
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm transition-colors hover:bg-brand-700"
+            aria-label="Поиск"
+          >
+            <Search className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+            aria-label="Меню"
+          >
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
       </div>
 
       {/* Мобильное меню */}
@@ -171,7 +182,6 @@ export function Header() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-4">
-              <SearchBar className="mb-4" onSubmitted={() => setMobileOpen(false)} />
               <nav className="flex flex-col gap-1" aria-label="Мобильная навигация">
                 {NAV.map((item) => (
                   <NavLink
@@ -228,6 +238,26 @@ export function Header() {
                   </Link>
                 ))}
               </nav>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Поисковый HUD — всплывает поверх интерфейса */}
+      {searchOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Поиск">
+          <div className="absolute inset-0 bg-slate-900/40" onClick={() => setSearchOpen(false)} />
+          <div className="absolute inset-x-0 top-0 bg-white shadow-lg">
+            <div className="container-x flex items-center gap-2 py-3">
+              <SearchBar className="flex-1" onSubmitted={() => setSearchOpen(false)} autoFocus />
+              <button
+                type="button"
+                onClick={() => setSearchOpen(false)}
+                aria-label="Закрыть поиск"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100"
+              >
+                <X className="h-5 w-5" aria-hidden="true" />
+              </button>
             </div>
           </div>
         </div>
