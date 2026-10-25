@@ -6,7 +6,7 @@
   "description": "SportFuel — каталог спортивного питания с переходом на товары Kaspi.kz (демо)",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node scripts/copy-404.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "images": "node scripts/generate-images.mjs"
